@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accept_call">Answer</string>
+    <string name="reject_call">Decline</string>
+    <string name="incoming_audio_call">Voice call…</string>
+    <string name="incoming_video_call">Video call…</string>
+</resources>

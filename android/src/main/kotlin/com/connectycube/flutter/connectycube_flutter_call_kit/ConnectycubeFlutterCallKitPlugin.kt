@@ -144,6 +144,8 @@ class ConnectycubeFlutterCallKitPlugin : FlutterPlugin, MethodCallHandler,
                     val callType = arguments["call_type"] as Int
                     val callInitiatorId = arguments["caller_id"] as Int
                     val callInitiatorName = arguments["caller_name"] as String
+                    val callSubtitle = arguments["caller_subtitle"] as String?
+                    val callInitiatorImageUrl = arguments["caller_image_url"] as String?
                     val callOpponents = ArrayList((arguments["call_opponents"] as String)
                         .split(',')
                         .map { it.toInt() })
@@ -155,8 +157,10 @@ class ConnectycubeFlutterCallKitPlugin : FlutterPlugin, MethodCallHandler,
                         callType,
                         callInitiatorId,
                         callInitiatorName,
+                        callSubtitle,
+                        callInitiatorImageUrl,
                         callOpponents,
-                        userInfo
+                        userInfo,
                     )
 
                     saveCallState(applicationContext, callId, CALL_STATE_PENDING)

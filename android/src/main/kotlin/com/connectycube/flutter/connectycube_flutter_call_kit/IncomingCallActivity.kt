@@ -15,11 +15,19 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.Nullable
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.squareup.picasso.Picasso
 
 
 fun createStartIncomingScreenIntent(
-    context: Context, callId: String, callType: Int, callInitiatorId: Int,
-    callInitiatorName: String, opponents: ArrayList<Int>, userInfo: String
+    context: Context,
+    callId: String,
+    callType: Int,
+    callInitiatorId: Int,
+    callInitiatorName: String,
+    callSubtitle: String?,
+    callInitiatorImageUrl: String?,
+    opponents: ArrayList<Int>,
+    userInfo: String,
 ): Intent {
     val intent = Intent(context, IncomingCallActivity::class.java)
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -27,6 +35,8 @@ fun createStartIncomingScreenIntent(
     intent.putExtra(EXTRA_CALL_TYPE, callType)
     intent.putExtra(EXTRA_CALL_INITIATOR_ID, callInitiatorId)
     intent.putExtra(EXTRA_CALL_INITIATOR_NAME, callInitiatorName)
+    intent.putExtra(EXTRA_CALL_SUBTITLE, callSubtitle)
+    intent.putExtra(EXTRA_CALL_INITIATOR_IMAGE_URL, callInitiatorImageUrl)
     intent.putIntegerArrayListExtra(EXTRA_CALL_OPPONENTS, opponents)
     intent.putExtra(EXTRA_CALL_USER_INFO, userInfo)
     return intent
@@ -40,6 +50,8 @@ class IncomingCallActivity : Activity() {
     private var callType = -1
     private var callInitiatorId = -1
     private var callInitiatorName: String? = null
+    private var callSubtitle: String? = null
+    private var callInitiatorImageUrl: String? = null
     private var callOpponents: ArrayList<Int>? = ArrayList()
     private var callUserInfo: String? = null
 
@@ -115,6 +127,8 @@ class IncomingCallActivity : Activity() {
         callType = intent.getIntExtra(EXTRA_CALL_TYPE, -1)
         callInitiatorId = intent.getIntExtra(EXTRA_CALL_INITIATOR_ID, -1)
         callInitiatorName = intent.getStringExtra(EXTRA_CALL_INITIATOR_NAME)
+        callSubtitle = intent.getStringExtra(EXTRA_CALL_SUBTITLE)
+        callInitiatorImageUrl = intent.getStringExtra(EXTRA_CALL_INITIATOR_IMAGE_URL)
         callOpponents = intent.getIntegerArrayListExtra(EXTRA_CALL_OPPONENTS)
         callUserInfo = intent.getStringExtra(EXTRA_CALL_USER_INFO)
     }
@@ -123,25 +137,54 @@ class IncomingCallActivity : Activity() {
         val callTitleTxt: TextView =
             findViewById(resources.getIdentifier("user_name_txt", "id", packageName))
         callTitleTxt.text = callInitiatorName
+
         val callSubTitleTxt: TextView =
+            findViewById(resources.getIdentifier("call_subtitle_txt", "id", packageName))
+        callSubTitleTxt.text = callSubtitle
+
+        val callTypeTxt: TextView =
             findViewById(resources.getIdentifier("call_type_txt", "id", packageName))
-        callSubTitleTxt.text =
-            String.format(CALL_TYPE_PLACEHOLDER, if (callType == 1) "Video" else "Audio")
+        callTypeTxt.text =
+            getString(if (callType == 1) R.string.incoming_video_call else R.string.incoming_audio_call)
+
+        setImage()
+    }
+
+    /**
+     * Set the image
+     *
+     * Check in the following order
+     *
+     * 1) callInitiatorImageUrl (From parameters)
+     * 2) icon (From settings)
+     * 3) connectycube_place_holder (default drawable)
+     */
+    private fun setImage() {
         val avatarImg: ImageView =
             findViewById(resources.getIdentifier("avatar_img", "id", packageName))
 
         val defaultImgResId = resources.getIdentifier("connectycube_place_holder", "drawable", packageName)
+
+        if (!TextUtils.isEmpty(callInitiatorImageUrl)) {
+            Picasso.Builder(applicationContext)
+                .build()
+                .load(callInitiatorImageUrl)
+                .placeholder(defaultImgResId)
+                .error(defaultImgResId)
+                .into(avatarImg)
+            return
+        }
+
         val customAvatarResName = com.connectycube.flutter.connectycube_flutter_call_kit.utils.getString(this, "icon")
-        if (TextUtils.isEmpty(customAvatarResName)){
-            avatarImg.setImageResource(defaultImgResId)
-        } else {
+        if(!TextUtils.isEmpty(customAvatarResName)) {
             val imgResourceId = resources.getIdentifier(customAvatarResName, "drawable", packageName)
             if (imgResourceId != 0){
                 avatarImg.setImageResource(imgResourceId)
-            } else {
-                avatarImg.setImageResource(defaultImgResId)
+                return
             }
         }
+
+        avatarImg.setImageResource(defaultImgResId)
     }
 
     // calls from layout file

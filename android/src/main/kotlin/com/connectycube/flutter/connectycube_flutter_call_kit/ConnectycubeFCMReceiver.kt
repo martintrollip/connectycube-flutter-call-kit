@@ -67,6 +67,8 @@ class ConnectycubeFCMReceiver : BroadcastReceiver() {
         val callType = data["call_type"]?.toInt()
         val callInitiatorId = data["caller_id"]?.toInt()
         val callInitiatorName = data["caller_name"]
+        val callSubtitle = data["caller_subtitle"]
+        val callInitiatorImageUrl = data["caller_image_url"]
         val callOpponentsString = data["call_opponents"]
         var callOpponents = ArrayList<Int>()
         if (callOpponentsString != null) {
@@ -85,8 +87,10 @@ class ConnectycubeFCMReceiver : BroadcastReceiver() {
             callType,
             callInitiatorId,
             callInitiatorName,
+            callSubtitle,
+            callInitiatorImageUrl,
             callOpponents,
-            userInfo
+            userInfo,
         )
 
         saveCallState(applicationContext, callId, CALL_STATE_PENDING)
