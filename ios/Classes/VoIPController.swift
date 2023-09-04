@@ -67,7 +67,6 @@ extension VoIPController: PKPushRegistryDelegate {
                     let callOpponentsString = "0"
                     let callOpponents = callOpponentsString.components(separatedBy: ",").map { Int($0) ?? 0 }
                     let callType = callTypeString == "voice_call" ? 0 : 1
-                    print("Martin! [VoIPController][didReceiveIncomingPushWith] data: \(data)")  
                     self.callKitController.reportIncomingCall(uuid: id, callType: callType, callInitiatorId: 0, callInitiatorName: name, opponents: callOpponents, userInfo: convertToJSON(dictionary: data)) { (error) in
                         completion()
                         if(error == nil){
