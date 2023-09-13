@@ -64,9 +64,10 @@ extension VoIPController: PKPushRegistryDelegate {
                 let status = data["status"] as? String,
                 let title = data["title"] as? String,
                 let token = data["token"] as? String {
-
+                    
+                    print("[VoIPController][didReceiveIncomingPushWith] status \(status)")
                     if (status != "ringing") {
-                        self.callKitController.reportCallEnded(uuid: UUID(uuidString: id)!, reason: CXCallEndedReason.remoteEnded);
+                        self.callKitController.reportCallEnded(uuid: UUID(uuidString: id)!, reason: CallEndedReason.init(rawValue: "remoteEnded")!);
                         completion()
                         return
                     }
