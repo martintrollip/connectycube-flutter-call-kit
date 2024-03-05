@@ -11,8 +11,6 @@ import android.text.style.ForegroundColorSpan
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.Exception
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 
 fun getStringResource(context: Context, name: String?): String? {
     return context.getString(
@@ -33,30 +31,6 @@ fun getColorizedText(string: String, colorHex: String): Spannable {
         )
     }
     return spannable
-}
-
-fun getMD5forString(source: String): String? {
-    var result: String? = null
-    try {
-        // Create MD5 Hash
-        val digest = MessageDigest.getInstance("MD5")
-        digest.update(source.toByteArray())
-        val messageDigest = digest.digest()
-
-        // Create Hex String
-        val hexString = StringBuilder()
-        for (b in messageDigest) {
-            var h = Integer.toHexString(0xFF and b.toInt())
-            while (h.length < 2) {
-                h = "0$h"
-            }
-            hexString.append(h)
-        }
-        result = hexString.toString()
-    } catch (e: NoSuchAlgorithmException) {
-        e.printStackTrace()
-    }
-    return result
 }
 
 fun mapToJsonString(map: Map<String, *>): String? {

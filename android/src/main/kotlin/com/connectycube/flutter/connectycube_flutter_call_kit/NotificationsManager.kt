@@ -18,6 +18,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.connectycube.flutter.connectycube_flutter_call_kit.utils.getColorizedText
 import com.connectycube.flutter.connectycube_flutter_call_kit.utils.getString
+import com.connectycube.flutter.connectycube_flutter_call_kit.utils.getStringResource
 
 const val CALL_CHANNEL_ID = "calls_channel_id"
 const val CALL_CHANNEL_NAME = "Calls"
@@ -29,8 +30,15 @@ fun cancelCallNotification(context: Context, callId: String) {
 }
 
 fun showCallNotification(
-    context: Context, callId: String, callType: Int, callInitiatorId: Int,
-    callInitiatorName: String, callOpponents: ArrayList<Int>, userInfo: String
+    context: Context,
+    callId: String,
+    callType: Int,
+    callInitiatorId: Int,
+    callInitiatorName: String,
+    callSubtitle: String?,
+    callInitiatorImageUrl: String?,
+    callOpponents: ArrayList<Int>,
+    userInfo: String
 ) {
     val notificationManager = NotificationManagerCompat.from(context)
 
@@ -58,7 +66,10 @@ fun showCallNotification(
     Log.d("NotificationsManager", "ringtone 2 $ringtone")
 
     val callTypeTitle =
-        String.format(CALL_TYPE_PLACEHOLDER, if (callType == 1) "Video" else "Audio")
+        getStringResource(
+            context,
+            if (callType == 1) "incoming_video_call" else "incoming_audio_call"
+        )
 
     val builder: NotificationCompat.Builder =
         createCallNotification(context, callInitiatorName, callTypeTitle, pendingIntent, ringtone)
@@ -93,8 +104,10 @@ fun showCallNotification(
         callType,
         callInitiatorId,
         callInitiatorName,
+        callSubtitle,
+        callInitiatorImageUrl,
         callOpponents,
-        userInfo
+        userInfo,
     )
 
     // Add action when delete call notification
@@ -175,12 +188,8 @@ fun addCallRejectAction(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
     )
     val declineAction: NotificationCompat.Action = NotificationCompat.Action.Builder(
-        context.resources.getIdentifier(
-            "ic_menu_close_clear_cancel",
-            "drawable",
-            context.packageName
-        ),
-        getColorizedText("Reject", "#E02B00"),
+        R.drawable.ic_call_end,
+        getStringResource(context, "reject_call") ?: "Reject",
         declinePendingIntent
     )
         .build()
@@ -215,8 +224,8 @@ fun addCallAcceptAction(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
     )
     val acceptAction: NotificationCompat.Action = NotificationCompat.Action.Builder(
-        context.resources.getIdentifier("ic_menu_call", "drawable", context.packageName),
-        getColorizedText("Accept", "#4CB050"),
+        R.drawable.ic_call_start,
+        getStringResource(context, "accept_call") ?: "Accept",
         acceptPendingIntent
     )
         .build()
@@ -230,8 +239,10 @@ fun addCallFullScreenIntent(
     callType: Int,
     callInitiatorId: Int,
     callInitiatorName: String,
+    callSubtitle: String?,
+    callInitiatorImageUrl: String?,
     callOpponents: ArrayList<Int>,
-    userInfo: String
+    userInfo: String,
 ) {
     val callFullScreenIntent: Intent = createStartIncomingScreenIntent(
         context,
@@ -239,8 +250,10 @@ fun addCallFullScreenIntent(
         callType,
         callInitiatorId,
         callInitiatorName,
+        callSubtitle,
+        callInitiatorImageUrl,
         callOpponents,
-        userInfo
+        userInfo,
     )
     val fullScreenPendingIntent = PendingIntent.getActivity(
         context,

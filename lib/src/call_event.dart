@@ -13,14 +13,20 @@ class CallEvent {
     required this.callType,
     required this.callerId,
     required this.callerName,
+    this.callerSubtitle,
+    this.callerImageUrl,
     required this.opponentsIds,
     this.userInfo,
   });
 
   final String sessionId;
+
+  /// Call type (0 - audio, 1 - video)
   final int callType;
   final int callerId;
   final String callerName;
+  final String? callerSubtitle;
+  final String? callerImageUrl;
   final Set<int> opponentsIds;
 
   /// Used for exchanging additional data between the Call notification and your app,
@@ -34,6 +40,8 @@ class CallEvent {
     int? callType,
     int? callerId,
     String? callerName,
+    String? subTitle,
+    String? callerImageUrl,
     Set<int>? opponentsIds,
     Map<String, String>? userInfo,
   }) {
@@ -42,6 +50,8 @@ class CallEvent {
       callType: callType ?? this.callType,
       callerId: callerId ?? this.callerId,
       callerName: callerName ?? this.callerName,
+      callerSubtitle: subTitle ?? this.callerSubtitle,
+      callerImageUrl: callerImageUrl ?? this.callerImageUrl,
       opponentsIds: opponentsIds ?? this.opponentsIds,
       userInfo: userInfo ?? this.userInfo,
     );
@@ -53,6 +63,8 @@ class CallEvent {
       'call_type': callType,
       'caller_id': callerId,
       'caller_name': callerName,
+      'caller_subtitle': callerSubtitle,
+      'caller_image_url': callerImageUrl,
       'call_opponents': opponentsIds.join(','),
       'user_info': jsonEncode(userInfo ?? <String, String>{}),
     };
@@ -65,8 +77,10 @@ class CallEvent {
       callType: map['call_type'] as int,
       callerId: map['caller_id'] as int,
       callerName: map['caller_name'] as String,
+      callerSubtitle: map['caller_subtitle'] as String?,
+      callerImageUrl: map['caller_image_url'] as String?,
       opponentsIds:
-      (map['call_opponents'] as String).split(',').map(int.parse).toSet(),
+          (map['call_opponents'] as String).split(',').map(int.parse).toSet(),
       userInfo: map['user_info'] != null
           ? Map<String, String>.from(jsonDecode(map['user_info']))
           : null,
@@ -75,7 +89,6 @@ class CallEvent {
     // userInfo: map['user_info'] == null || map['user_info'].isEmpty
     //     ? null
     //     : Map<String, String>.from(jsonDecode(map['user_info'])),
-
   }
 
   String toJson() => json.encode(toMap());
@@ -90,6 +103,8 @@ class CallEvent {
         'callType: $callType, '
         'callerId: $callerId, '
         'callerName: $callerName, '
+        'callerSubtitle: $callerSubtitle, '
+        'callerImageUrl: $callerImageUrl, '
         'opponentsIds: $opponentsIds, '
         'userInfo: $userInfo)';
   }
@@ -103,6 +118,8 @@ class CallEvent {
         other.callType == callType &&
         other.callerId == callerId &&
         other.callerName == callerName &&
+        other.callerSubtitle == callerSubtitle &&
+        other.callerImageUrl == callerImageUrl &&
         setEquals(other.opponentsIds, opponentsIds) &&
         mapEquals(other.userInfo, userInfo);
   }
@@ -110,10 +127,12 @@ class CallEvent {
   @override
   int get hashCode {
     return sessionId.hashCode ^
-    callType.hashCode ^
-    callerId.hashCode ^
-    callerName.hashCode ^
-    opponentsIds.hashCode ^
-    userInfo.hashCode;
+        callType.hashCode ^
+        callerId.hashCode ^
+        callerName.hashCode ^
+        callerSubtitle.hashCode ^
+        callerImageUrl.hashCode ^
+        opponentsIds.hashCode ^
+        userInfo.hashCode;
   }
 }
