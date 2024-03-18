@@ -51,26 +51,28 @@ extension VoIPController: PKPushRegistryDelegate {
     
     func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload, for type: PKPushType, completion: @escaping () -> Void) {
         print("[VoIPController][pushRegistry][didReceiveIncomingPushWith] payload: \(payload.dictionaryPayload)")
-        
+    
         let callData = payload.dictionaryPayload
 
         if type == .voIP {
-            if  let data = callData["data"] as? [String: Any], 
-                let avatarURL = data["avatar_url"] as? String,
+            let data = callData["data"] as! [String: Any]
+            let id = data["id"] as! String
+            let status = data["status"] as! String
+
+            if (status != "ringing") {
+                self.callKitController.reportCallEnded(uuid: UUID(uuidString: id.lowercased())!, reason: CallEndedReason.remoteEnded)
+                completion()
+                return
+            }
+            
+            if  let avatarURL = data["avatar_url"] as? String,
                 let callTypeString = data["call_type"] as? String,
                 let conversationSID = data["conversation_sid"] as? String,
-                let id = data["id"] as? String,
                 let name = data["name"] as? String,
-                let status = data["status"] as? String,
                 let title = data["title"] as? String,
                 let token = data["token"] as? String {
                     
                     print("[VoIPController][didReceiveIncomingPushWith] status \(status)")
-                    if (status != "ringing") {
-                        self.callKitController.reportCallEnded(uuid: UUID(uuidString: id)!, reason: CallEndedReason.init(rawValue: "remoteEnded")!);
-                        completion()
-                        return
-                    }
 
                     let callOpponentsString = "0"
                     let callOpponents = callOpponentsString.components(separatedBy: ",").map { Int($0) ?? 0 }
@@ -85,7 +87,7 @@ extension VoIPController: PKPushRegistryDelegate {
                     }
             } else {
                 completion()
-                print("Payload is nil, invalid fields or not a dictionary")
+                print("[VoIPController][didReceiveIncomingPushWith] Payload is nil, invalid fields or not a dictionary")
             }
         } else {
             completion()
