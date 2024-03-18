@@ -64,7 +64,6 @@ extension VoIPController: PKPushRegistryDelegate {
                 completion()
                 return
             }
-
             
             if  let avatarURL = data["avatar_url"] as? String,
                 let callTypeString = data["call_type"] as? String,
