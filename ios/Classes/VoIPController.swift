@@ -55,7 +55,7 @@ extension VoIPController: PKPushRegistryDelegate {
         let callData = payload.dictionaryPayload
 
         if type == .voIP {
-            let data = callData["data"] as? [String: Any]
+            let data = callData["data"] as! [String: Any]
             let id = data["id"] as! String
             let status = data["status"] as! String
 
