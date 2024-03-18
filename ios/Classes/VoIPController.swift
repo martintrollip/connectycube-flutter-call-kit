@@ -56,7 +56,7 @@ extension VoIPController: PKPushRegistryDelegate {
 
         if type == .voIP {
             let data = callData["data"] as? [String: Any]
-            let callId = data["id"] as! String
+            let id = data["id"] as! String
             let status = data["status"] as! String
 
             if (status != "ringing") {
