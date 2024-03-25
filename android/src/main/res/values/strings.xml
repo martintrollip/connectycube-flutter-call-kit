@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="call_avatar_size">120dp</dimen>
-    <dimen name="call_ripple_size">28dp</dimen>
-    <dimen name="call_ripple_layout_size">400dp</dimen>
-    <dimen name="call_action_button_size">64dp</dimen>
+    <string name="accept_call">Answer</string>
+    <string name="reject_call">Decline</string>
+    <string name="incoming_audio_call">Voice call…</string>
+    <string name="incoming_video_call">Video call…</string>
 </resources>
