@@ -13,4 +13,8 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
+    <style name="CallTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:textColor">@color/call_text_color</item>
+    </style>
 </resources>

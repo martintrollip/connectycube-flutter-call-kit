@@ -37,8 +37,15 @@ fun cancelCallNotification(context: Context, callId: String) {
 }
 
 fun showCallNotification(
-    context: Context, callId: String, callType: Int, callInitiatorId: Int,
-    callInitiatorName: String, callOpponents: ArrayList<Int>, callPhoto: String?, userInfo: String
+    context: Context, 
+    callId: String, 
+    callType: Int, 
+    callInitiatorId: Int,
+    callInitiatorName: String, 
+    callSubtitle: String?,
+    callOpponents: ArrayList<Int>,
+    callPhoto: String?, 
+    userInfo: String,
 ) {
     Log.d("NotificationsManager", "[showCallNotification]")
     val notificationManager = NotificationManagerCompat.from(context)
@@ -72,7 +79,10 @@ fun showCallNotification(
     val isVideoCall = callType == 1
 
     val callTypeTitle =
-        String.format(CALL_TYPE_PLACEHOLDER, if (isVideoCall) "Video" else "Audio")
+        getStringResource(
+            context,
+            if (callType == 1) "incoming_video_call" else "incoming_audio_call"
+        )
 
     val callData = Bundle()
     callData.putString(EXTRA_CALL_ID, callId)
@@ -104,6 +114,7 @@ fun showCallNotification(
         callType,
         callInitiatorId,
         callInitiatorName,
+        callSubtitle,
         callOpponents,
         callPhoto,
         userInfo
@@ -268,9 +279,10 @@ fun addCallFullScreenIntent(
     callType: Int,
     callInitiatorId: Int,
     callInitiatorName: String,
+    callSubtitle: String?,
     callOpponents: ArrayList<Int>,
     callPhoto: String?,
-    userInfo: String
+    userInfo: String,
 ) {
     val callFullScreenIntent: Intent = createStartIncomingScreenIntent(
         context,
@@ -278,9 +290,10 @@ fun addCallFullScreenIntent(
         callType,
         callInitiatorId,
         callInitiatorName,
+        callSubtitle,
         callOpponents,
         callPhoto,
-        userInfo
+        userInfo,
     )
     val fullScreenPendingIntent = PendingIntent.getActivity(
         context,

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <shape android:shape="oval">
+        <shape android:shape="rectangle">
             <size android:width="64dp" android:height="64dp" />
-            <solid android:color="@color/accept_call_btn" />
+            <solid android:color="@color/call_accept_button_color" />
+            <corners android:radius="32dp" />
         </shape>
     </item>
 </selector>

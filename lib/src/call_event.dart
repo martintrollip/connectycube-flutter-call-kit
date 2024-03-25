@@ -14,6 +14,7 @@ class CallEvent {
     required this.callerId,
     required this.callerName,
     required this.opponentsIds,
+    this.callerSubtitle,
     this.callPhoto,
     this.userInfo,
   });
@@ -22,6 +23,7 @@ class CallEvent {
   final int callType;
   final int callerId;
   final String callerName;
+  final String? callerSubtitle;
   final Set<int> opponentsIds;
   final String? callPhoto;
 
@@ -36,6 +38,7 @@ class CallEvent {
     int? callType,
     int? callerId,
     String? callerName,
+    String? subTitle,
     Set<int>? opponentsIds,
     String? callPhoto,
     Map<String, String>? userInfo,
@@ -45,6 +48,7 @@ class CallEvent {
       callType: callType ?? this.callType,
       callerId: callerId ?? this.callerId,
       callerName: callerName ?? this.callerName,
+      callerSubtitle: subTitle ?? this.callerSubtitle,
       opponentsIds: opponentsIds ?? this.opponentsIds,
       callPhoto: callPhoto ?? this.callPhoto,
       userInfo: userInfo ?? this.userInfo,
@@ -57,6 +61,7 @@ class CallEvent {
       'call_type': callType,
       'caller_id': callerId,
       'caller_name': callerName,
+      'caller_subtitle': callerSubtitle,
       'call_opponents': opponentsIds.join(','),
       'photo_url': callPhoto,
       'user_info': jsonEncode(userInfo ?? <String, String>{}),
@@ -70,6 +75,7 @@ class CallEvent {
       callType: map['call_type'] as int,
       callerId: map['caller_id'] as int,
       callerName: map['caller_name'] as String,
+      callerSubtitle: map['caller_subtitle'] as String?,
       opponentsIds:
           (map['call_opponents'] as String).split(',').map(int.parse).toSet(),
       callPhoto: map['photo_url'],
@@ -91,6 +97,7 @@ class CallEvent {
         'callType: $callType, '
         'callerId: $callerId, '
         'callerName: $callerName, '
+        'callerSubtitle: $callerSubtitle, '
         'opponentsIds: $opponentsIds, '
         'callPhoto: $callPhoto, '
         'userInfo: $userInfo)';
@@ -105,6 +112,7 @@ class CallEvent {
         other.callType == callType &&
         other.callerId == callerId &&
         other.callerName == callerName &&
+        other.callerSubtitle == callerSubtitle &&
         setEquals(other.opponentsIds, opponentsIds) &&
         other.callPhoto == callPhoto &&
         mapEquals(other.userInfo, userInfo);
@@ -116,6 +124,7 @@ class CallEvent {
         callType.hashCode ^
         callerId.hashCode ^
         callerName.hashCode ^
+        callerSubtitle.hashCode ^
         opponentsIds.hashCode ^
         userInfo.hashCode;
   }

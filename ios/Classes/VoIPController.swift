@@ -51,42 +51,57 @@ extension VoIPController: PKPushRegistryDelegate {
     
     func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload, for type: PKPushType, completion: @escaping () -> Void) {
         print("[VoIPController][pushRegistry][didReceiveIncomingPushWith] payload: \(payload.dictionaryPayload)")
-        
+    
         let callData = payload.dictionaryPayload
-        
-        if type == .voIP{
-            let callId = callData["session_id"] as! String
-            let signalingType = callData["signal_type"] as? String
+
+        if type == .voIP {
+            let data = callData["data"] as! [String: Any]
+            let id = data["id"] as! String
+            let status = data["status"] as! String
+
+            if (status != "ringing") {
+                self.callKitController.reportCallEnded(uuid: UUID(uuidString: id.lowercased())!, reason: CallEndedReason.remoteEnded)
+                completion()
+                return
+            }
             
-            if (signalingType != nil && (signalingType == "endCall" || signalingType == "rejectCall")) {
-                self.callKitController.reportCallEnded(uuid: UUID(uuidString: callId.lowercased())!, reason: CallEndedReason.remoteEnded)
-                
-                completion()
-            } else if (signalingType != nil && signalingType == "startCall") {
-                let callType = callData["call_type"] as! Int
-                let callInitiatorId = callData["caller_id"] as! Int
-                let callInitiatorName = callData["caller_name"] as! String
-                let callOpponentsString = callData["call_opponents"] as! String
-                let callOpponents = callOpponentsString.components(separatedBy: ",")
-                    .map { Int($0) ?? 0 }
-                let userInfo = callData["user_info"] as? String
-                
-                self.callKitController.reportIncomingCall(uuid: callId.lowercased(), callType: callType, callInitiatorId: callInitiatorId, callInitiatorName: callInitiatorName, opponents: callOpponents, userInfo: userInfo) { (error) in
+            if  let avatarURL = data["avatar_url"] as? String,
+                let callTypeString = data["call_type"] as? String,
+                let conversationSID = data["conversation_sid"] as? String,
+                let name = data["name"] as? String,
+                let title = data["title"] as? String,
+                let token = data["token"] as? String {
                     
-                    completion()
-                    
-                    if(error == nil){
-                        print("[VoIPController][didReceiveIncomingPushWith] reportIncomingCall SUCCESS")
-                    } else {
-                        print("[VoIPController][didReceiveIncomingPushWith] reportIncomingCall ERROR: \(error?.localizedDescription ?? "none")")
+                    print("[VoIPController][didReceiveIncomingPushWith] status \(status)")
+
+                    let callOpponentsString = "0"
+                    let callOpponents = callOpponentsString.components(separatedBy: ",").map { Int($0) ?? 0 }
+                    let callType = callTypeString == "voice_call" ? 0 : 1
+                    self.callKitController.reportIncomingCall(uuid: id, callType: callType, callInitiatorId: 0, callInitiatorName: name, opponents: callOpponents, userInfo: convertToJSON(dictionary: data)) { (error) in
+                        completion()
+                        if(error == nil){
+                            print("[VoIPController][didReceiveIncomingPushWith] reportIncomingCall SUCCESS")
+                        } else {
+                            print("[VoIPController][didReceiveIncomingPushWith] reportIncomingCall ERROR: \(error?.localizedDescription ?? "none")")
+                        }
                     }
-                }
             } else {
-                print("[VoIPController][didReceiveIncomingPushWith] unknown 'signal_type' was received")
                 completion()
+                print("[VoIPController][didReceiveIncomingPushWith] Payload is nil, invalid fields or not a dictionary")
             }
         } else {
             completion()
+        }
+    }
+
+    func convertToJSON(dictionary: [String: Any]) -> String? {
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: dictionary, options: [])
+            let jsonString = String(data: jsonData, encoding: .utf8)
+            return jsonString
+        } catch {
+            print("Error converting to JSON: \(error.localizedDescription)")
+            return nil
         }
     }
 }

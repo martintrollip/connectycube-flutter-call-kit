@@ -1,20 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ace3c2"
-    android:orientation="vertical">
+    android:background="@color/call_background_color"
+    android:orientation="vertical"
+    android:theme="@style/CallTheme">
+
+    <com.connectycube.flutter.connectycube_flutter_call_kit.widgets.RippleRelativeLayout
+        android:id="@+id/llBackgroundAnimation"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/call_ripple_layout_size"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:clipToPadding="false"
+        android:fitsSystemWindows="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:ripple_amount="4"
+        app:ripple_radius="@dimen/call_ripple_size"
+        app:ripple_scale="7" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/avatar_img"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="64dp"
-        android:padding="4dp"
+        android:layout_width="@dimen/call_avatar_size"
+        android:layout_height="@dimen/call_avatar_size"
+        android:layout_centerInParent="true"
+        app:layout_constraintBottom_toBottomOf="@+id/llBackgroundAnimation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/llBackgroundAnimation"
         android:scaleType="fitCenter"
         app:shapeAppearanceOverlay="@style/circleImageView"
         app:strokeColor="@android:color/white"
@@ -26,19 +41,33 @@
         android:id="@+id/user_name_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/avatar_img"
+        android:layout_below="@+id/llBackgroundAnimation"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="12dp"
         android:ellipsize="end"
         android:lines="1"
-        android:shadowColor="#7F000000"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="4"
-        android:textColor="#FBFBFB"
+        android:paddingTop="16dp"
+        android:paddingHorizontal="16dp"
         android:textSize="24sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/avatar_img"
         tools:text="User Name" />
+
+    <TextView
+        android:id="@+id/call_subtitle_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llBackgroundAnimation"
+        android:layout_centerHorizontal="true"
+        android:ellipsize="end"
+        android:lines="1"
+        android:paddingHorizontal="16dp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_name_txt"
+        tools:text="Subtitle" />
 
     <TextView
         android:id="@+id/call_type_txt"
@@ -47,66 +76,77 @@
         android:layout_below="@+id/user_name_txt"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
-        android:shadowColor="#7F000000"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="4"
-        android:textColor="#FBFBFB"
-        android:textSize="18sp"
+        android:padding="24dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/call_subtitle_txt"
         tools:text="Incoming audio call" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/end_call_layout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="48dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:layout_marginHorizontal="56dp"
+        android:layout_marginVertical="32dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <com.skyfishjy.library.RippleBackground
-            android:id="@+id/reject_button_animation"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            app:rb_color="#FF5A33"
-            app:rb_duration="3000"
-            app:rb_radius="28dp"
-            app:rb_rippleAmount="5"
-            app:rb_scale="2">
+        <ImageView
+            android:id="@+id/end_call_btn"
+            android:layout_width="@dimen/call_action_button_size"
+            android:layout_height="@dimen/call_action_button_size"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/selector_call_end"
+            android:onClick="onEndCall"
+            android:padding="16dp"
+            android:src="@drawable/ic_call_end"
+            tools:ignore="ContentDescription" />
 
-            <ImageView
-                android:id="@+id/end_call_btn"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/selector_call_end"
-                android:onClick="onEndCall"
-                android:padding="16dp"
-                android:src="@drawable/ic_call_end"
-                tools:ignore="ContentDescription" />
-        </com.skyfishjy.library.RippleBackground>
-
-        <com.skyfishjy.library.RippleBackground xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/accept_button_animation"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginStart="64dp"
-            app:rb_color="#80CB83"
-            app:rb_duration="3000"
-            app:rb_radius="28dp"
-            app:rb_rippleAmount="5"
-            app:rb_scale="2">
-
-            <ImageView
-                android:id="@+id/start_call_btn"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/selector_call_start"
-                android:onClick="onStartCall"
-                android:padding="16dp"
-                tools:ignore="ContentDescription"
-                tools:src="@drawable/ic_video_call_start" />
-
-        </com.skyfishjy.library.RippleBackground>
+        <TextView
+            android:id="@+id/end_call_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="8dp"
+            android:textSize="14sp"
+            android:text="@string/reject_call"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="Decline" />
     </LinearLayout>
-</RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/start_call_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="56dp"
+        android:layout_marginVertical="32dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/start_call_btn"
+            android:layout_width="@dimen/call_action_button_size"
+            android:layout_height="@dimen/call_action_button_size"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/selector_call_start"
+            android:onClick="onStartCall"
+            android:padding="16dp"
+            android:src="@drawable/ic_call_start"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/start_call_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="8dp"
+            android:textSize="14sp"
+            android:text="@string/accept_call"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="Answer" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
