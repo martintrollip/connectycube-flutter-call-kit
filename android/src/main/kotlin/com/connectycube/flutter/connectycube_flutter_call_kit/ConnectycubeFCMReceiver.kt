@@ -103,6 +103,7 @@ class ConnectycubeFCMReceiver : BroadcastReceiver() {
             callType,
             callInitiatorId,
             callInitiatorName,
+            callSubtitle,
             callOpponents,
             callPhoto,
             userInfo

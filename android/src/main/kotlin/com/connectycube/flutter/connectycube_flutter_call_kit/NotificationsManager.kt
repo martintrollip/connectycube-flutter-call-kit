@@ -23,6 +23,7 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.connectycube.flutter.connectycube_flutter_call_kit.utils.getDefaultPhoto
 import com.connectycube.flutter.connectycube_flutter_call_kit.utils.getPhotoPlaceholderResId
 import com.connectycube.flutter.connectycube_flutter_call_kit.utils.getString
+import com.connectycube.flutter.connectycube_flutter_call_kit.utils.getStringResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
