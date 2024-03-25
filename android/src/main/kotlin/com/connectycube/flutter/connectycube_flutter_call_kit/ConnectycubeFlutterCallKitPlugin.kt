@@ -383,8 +383,15 @@ class ConnectycubeFlutterCallKitPlugin : FlutterPlugin, MethodCallHandler,
 }
 
 fun notifyAboutIncomingCall(
-    context: Context, callId: String, callType: Int, callInitiatorId: Int,
-    callInitiatorName: String, callOpponents: ArrayList<Int>, callPhoto: String?, userInfo: String
+    context: Context, 
+    callId: String, 
+    callType: Int, 
+    callInitiatorId: Int,
+    callInitiatorName: String, 
+    callSubtitle: String?, 
+    callOpponents: ArrayList<Int>, 
+    callPhoto: String?, 
+    userInfo: String,
 ) {
     val intent = Intent(ACTION_CALL_INCOMING)
         .putExtra(EXTRA_CALL_ID, callId)
