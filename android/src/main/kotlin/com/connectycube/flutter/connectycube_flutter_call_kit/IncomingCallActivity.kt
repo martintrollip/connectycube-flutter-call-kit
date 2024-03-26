@@ -207,9 +207,9 @@ class IncomingCallActivity : Activity() {
             avatarImg.setImageResource(defaultPhotoResId)
         }
 
-        val acceptButtonAnimation: RippleBackground =
+        val rippleAnimation: RippleBackground =
             findViewById(resources.getIdentifier("llBackgroundAnimation", "id", packageName))
-        acceptButtonAnimation.startRippleAnimation()
+            rippleAnimation.startRippleAnimation()
     }
 
     // calls from layout file
