@@ -8,21 +8,42 @@
     android:orientation="vertical"
     android:theme="@style/CallTheme">
 
-    <com.connectycube.flutter.connectycube_flutter_call_kit.widgets.RippleRelativeLayout
+    <com.skyfishjy.library.RippleBackground
         android:id="@+id/llBackgroundAnimation"
         android:layout_width="match_parent"
         android:layout_height="@dimen/call_ripple_layout_size"
         android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
         android:layout_centerHorizontal="true"
         android:clipToPadding="false"
-        android:fitsSystemWindows="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:ripple_amount="4"
-        app:ripple_radius="@dimen/call_ripple_size"
-        app:ripple_scale="7" />
+        app:rb_color="#FF5A33"
+        app:rb_duration="3000"
+        app:rb_radius="28dp"
+        app:rb_rippleAmount="5"
+        app:rb_scale="2">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/avatar_img"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/avatar_img"
+            android:layout_width="@dimen/call_avatar_size"
+            android:layout_height="@dimen/call_avatar_size"
+            android:layout_centerInParent="true"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@+id/llBackgroundAnimation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/llBackgroundAnimation"
+            app:shapeAppearanceOverlay="@style/circleImageView"
+            app:strokeColor="@android:color/white"
+            app:strokeWidth="2dp"
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/photo_placeholder" />
+    </com.skyfishjy.library.RippleBackground>
+
+    <View
+        android:id="@+id/placeholder"
         android:layout_width="@dimen/call_avatar_size"
         android:layout_height="@dimen/call_avatar_size"
         android:layout_centerInParent="true"
@@ -41,24 +62,24 @@
         android:id="@+id/user_name_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/llBackgroundAnimation"
+        android:layout_below="@+id/placeholder"
         android:layout_centerHorizontal="true"
         android:ellipsize="end"
         android:lines="1"
-        android:paddingTop="16dp"
         android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/avatar_img"
+        app:layout_constraintTop_toBottomOf="@id/placeholder"
         tools:text="User Name" />
 
     <TextView
         android:id="@+id/call_subtitle_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/llBackgroundAnimation"
+        android:layout_below="@+id/placeholder"
         android:layout_centerHorizontal="true"
         android:ellipsize="end"
         android:lines="1"
@@ -111,8 +132,8 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:padding="8dp"
-            android:textSize="14sp"
             android:text="@string/reject_call"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Decline" />
     </LinearLayout>
@@ -144,8 +165,8 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:padding="8dp"
-            android:textSize="14sp"
             android:text="@string/accept_call"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Answer" />
     </LinearLayout>
