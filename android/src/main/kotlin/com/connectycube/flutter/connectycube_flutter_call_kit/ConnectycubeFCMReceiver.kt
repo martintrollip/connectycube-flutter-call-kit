@@ -47,6 +47,8 @@ class ConnectycubeFCMReceiver : BroadcastReceiver() {
     }
 
     private fun processEndCallEvent(applicationContext: Context, data: Map<String, String>) {
+        Log.d(TAG, "[processEndCallEvent]")
+
         val callId = data["session_id"] ?: return
 
 
@@ -54,6 +56,7 @@ class ConnectycubeFCMReceiver : BroadcastReceiver() {
     }
 
     private fun processInviteCallEvent(applicationContext: Context, data: Map<String, String>) {
+        Log.d(TAG, "[processInviteCallEvent]")
         val callId = data["session_id"]
 
         if (callId == null || CALL_STATE_UNKNOWN != getCallState(
@@ -61,6 +64,7 @@ class ConnectycubeFCMReceiver : BroadcastReceiver() {
                 callId
             )
         ) {
+            Log.d(TAG, "[processInviteCallEvent] callId == null || CALL_STATE_UNKNOWN != getCallState(applicationContext, callId)")
             return
         }
 
@@ -68,19 +72,31 @@ class ConnectycubeFCMReceiver : BroadcastReceiver() {
         val callInitiatorId = data["caller_id"]?.toInt()
         val callInitiatorName = data["caller_name"]
         val callSubtitle = data["caller_subtitle"]
-        val callInitiatorImageUrl = data["caller_image_url"]
+        val callPhoto = data["photo_url"]
         val callOpponentsString = data["call_opponents"]
         var callOpponents = ArrayList<Int>()
         if (callOpponentsString != null) {
             callOpponents = ArrayList(callOpponentsString.split(',').map { it.toInt() })
         }
-
         val userInfo = data["user_info"] ?: JSONObject(emptyMap<String, String>()).toString()
 
         if (callType == null || callInitiatorId == null || callInitiatorName == null || callOpponents.isEmpty()) {
+            Log.d(TAG, "[processInviteCallEvent] callType == null || callInitiatorId == null || callInitiatorName == null || callOpponents.isEmpty()")
             return
         }
 
+        notifyAboutIncomingCall(
+            applicationContext,
+            callId,
+            callType,
+            callInitiatorId,
+            callInitiatorName,
+            callSubtitle,
+            callOpponents,
+            callPhoto,
+            userInfo,
+        )
+            
         showCallNotification(
             applicationContext,
             callId,
@@ -88,9 +104,9 @@ class ConnectycubeFCMReceiver : BroadcastReceiver() {
             callInitiatorId,
             callInitiatorName,
             callSubtitle,
-            callInitiatorImageUrl,
             callOpponents,
-            userInfo,
+            callPhoto,
+            userInfo
         )
 
         saveCallState(applicationContext, callId, CALL_STATE_PENDING)

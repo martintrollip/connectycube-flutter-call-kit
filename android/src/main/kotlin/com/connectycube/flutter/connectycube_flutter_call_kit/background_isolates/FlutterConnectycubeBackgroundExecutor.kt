@@ -213,12 +213,14 @@ class FlutterConnectycubeBackgroundExecutor : MethodCallHandler {
             userCallbackHandle = getBackgroundRejectHandler(ContextHolder.applicationContext)
         } else if (ACCEPTED_IN_BACKGROUND == callEventName) {
             userCallbackHandle = getBackgroundAcceptHandler(ContextHolder.applicationContext)
+        } else if (INCOMING_IN_BACKGROUND == callEventName) {
+            userCallbackHandle = getBackgroundIncomingCallHandler(ContextHolder.applicationContext)
         }
 
         if (userCallbackHandle == -1L) {
             Log.e(
                 "FlutterConnectycubeBackgroundExecutor",
-                "No one background handler has been registered."
+                "${intent.action} background handler has not been registered."
             )
             return
         }
@@ -240,6 +242,7 @@ class FlutterConnectycubeBackgroundExecutor : MethodCallHandler {
         parameters["caller_name"] = intent.getStringExtra(EXTRA_CALL_INITIATOR_NAME)
         parameters["call_opponents"] =
             intent.getIntegerArrayListExtra(EXTRA_CALL_OPPONENTS)?.joinToString(separator = ",")
+        parameters["photo_url"] = intent.getStringExtra(EXTRA_CALL_PHOTO)
         parameters["user_info"] = intent.getStringExtra(EXTRA_CALL_USER_INFO)
 
 

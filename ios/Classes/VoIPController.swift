@@ -94,15 +94,14 @@ extension VoIPController: PKPushRegistryDelegate {
         }
     }
 
-func convertToJSON(dictionary: [String: Any]) -> String? {
-    do {
-        let jsonData = try JSONSerialization.data(withJSONObject: dictionary, options: [])
-        let jsonString = String(data: jsonData, encoding: .utf8)
-        return jsonString
-    } catch {
-        print("Error converting to JSON: \(error.localizedDescription)")
-        return nil
+    func convertToJSON(dictionary: [String: Any]) -> String? {
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: dictionary, options: [])
+            let jsonString = String(data: jsonData, encoding: .utf8)
+            return jsonString
+        } catch {
+            print("Error converting to JSON: \(error.localizedDescription)")
+            return nil
+        }
     }
 }
-}
-          

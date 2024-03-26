@@ -1,32 +1,38 @@
 package com.connectycube.flutter.connectycube_flutter_call_kit
 
 import android.app.Activity
+import android.app.KeyguardManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.Nullable
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
+import com.connectycube.flutter.connectycube_flutter_call_kit.utils.getPhotoPlaceholderResId
+import com.google.android.material.imageview.ShapeableImageView
+import com.skyfishjy.library.RippleBackground
 
 
 fun createStartIncomingScreenIntent(
-    context: Context,
-    callId: String,
-    callType: Int,
+    context: Context, 
+    callId: String, 
+    callType: Int, 
     callInitiatorId: Int,
-    callInitiatorName: String,
-    callSubtitle: String?,
-    callInitiatorImageUrl: String?,
-    opponents: ArrayList<Int>,
+    callInitiatorName: String, 
+    callSubtitle: String?, 
+    opponents: ArrayList<Int>, 
+    callPhoto: String?, 
     userInfo: String,
 ): Intent {
     val intent = Intent(context, IncomingCallActivity::class.java)
@@ -36,8 +42,8 @@ fun createStartIncomingScreenIntent(
     intent.putExtra(EXTRA_CALL_INITIATOR_ID, callInitiatorId)
     intent.putExtra(EXTRA_CALL_INITIATOR_NAME, callInitiatorName)
     intent.putExtra(EXTRA_CALL_SUBTITLE, callSubtitle)
-    intent.putExtra(EXTRA_CALL_INITIATOR_IMAGE_URL, callInitiatorImageUrl)
     intent.putIntegerArrayListExtra(EXTRA_CALL_OPPONENTS, opponents)
+    intent.putExtra(EXTRA_CALL_PHOTO, callPhoto)
     intent.putExtra(EXTRA_CALL_USER_INFO, userInfo)
     return intent
 }
@@ -51,8 +57,8 @@ class IncomingCallActivity : Activity() {
     private var callInitiatorId = -1
     private var callInitiatorName: String? = null
     private var callSubtitle: String? = null
-    private var callInitiatorImageUrl: String? = null
     private var callOpponents: ArrayList<Int>? = ArrayList()
+    private var callPhoto: String? = null
     private var callUserInfo: String? = null
 
 
@@ -61,7 +67,7 @@ class IncomingCallActivity : Activity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(resources.getIdentifier("activity_incoming_call", "layout", packageName))
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
             setTurnScreenOn(true)
         } else {
@@ -69,6 +75,35 @@ class IncomingCallActivity : Activity() {
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
             )
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            setInheritShowWhenLocked(true)
+        }
+
+        with(getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                requestDismissKeyguard(this@IncomingCallActivity, object :
+                    KeyguardManager.KeyguardDismissCallback() {
+                    override fun onDismissError() {
+                        Log.d("IncomingCallActivity", "[KeyguardDismissCallback.onDismissError]")
+                    }
+
+                    override fun onDismissSucceeded() {
+                        Log.d(
+                            "IncomingCallActivity",
+                            "[KeyguardDismissCallback.onDismissSucceeded]"
+                        )
+                    }
+
+                    override fun onDismissCancelled() {
+                        Log.d(
+                            "IncomingCallActivity",
+                            "[KeyguardDismissCallback.onDismissCancelled]"
+                        )
+                    }
+                })
+            }
         }
 
         processIncomingData(intent)
@@ -92,6 +127,7 @@ class IncomingCallActivity : Activity() {
                     ACTION_CALL_NOTIFICATION_CANCELED, ACTION_CALL_REJECT, ACTION_CALL_ENDED -> {
                         finishAndRemoveTask()
                     }
+
                     ACTION_CALL_ACCEPT -> finishDelayed()
                 }
             }
@@ -128,8 +164,8 @@ class IncomingCallActivity : Activity() {
         callInitiatorId = intent.getIntExtra(EXTRA_CALL_INITIATOR_ID, -1)
         callInitiatorName = intent.getStringExtra(EXTRA_CALL_INITIATOR_NAME)
         callSubtitle = intent.getStringExtra(EXTRA_CALL_SUBTITLE)
-        callInitiatorImageUrl = intent.getStringExtra(EXTRA_CALL_INITIATOR_IMAGE_URL)
         callOpponents = intent.getIntegerArrayListExtra(EXTRA_CALL_OPPONENTS)
+        callPhoto = intent.getStringExtra(EXTRA_CALL_PHOTO)
         callUserInfo = intent.getStringExtra(EXTRA_CALL_USER_INFO)
     }
 
@@ -137,54 +173,43 @@ class IncomingCallActivity : Activity() {
         val callTitleTxt: TextView =
             findViewById(resources.getIdentifier("user_name_txt", "id", packageName))
         callTitleTxt.text = callInitiatorName
-
         val callSubTitleTxt: TextView =
             findViewById(resources.getIdentifier("call_subtitle_txt", "id", packageName))
         callSubTitleTxt.text = callSubtitle
-
         val callTypeTxt: TextView =
             findViewById(resources.getIdentifier("call_type_txt", "id", packageName))
         callTypeTxt.text =
-            getString(if (callType == 1) R.string.incoming_video_call else R.string.incoming_audio_call)
+            getString(if (callType == 1) R.string.incoming_video_call else R.string.incoming_audio_call)    
 
-        setImage()
-    }
+        val callAcceptButton: ImageView =
+            findViewById(resources.getIdentifier("start_call_btn", "id", packageName))
+        val acceptButtonIconName = if (callType == 1) "ic_video_call_start" else "ic_call_start"
+        callAcceptButton.setImageResource(
+            resources.getIdentifier(
+                acceptButtonIconName,
+                "drawable",
+                packageName
+            )
+        )
 
-    /**
-     * Set the image
-     *
-     * Check in the following order
-     *
-     * 1) callInitiatorImageUrl (From parameters)
-     * 2) icon (From settings)
-     * 3) connectycube_place_holder (default drawable)
-     */
-    private fun setImage() {
-        val avatarImg: ImageView =
+        val avatarImg: ShapeableImageView =
             findViewById(resources.getIdentifier("avatar_img", "id", packageName))
 
-        val defaultImgResId = resources.getIdentifier("connectycube_place_holder", "drawable", packageName)
+        val defaultPhotoResId = getPhotoPlaceholderResId(applicationContext)
 
-        if (!TextUtils.isEmpty(callInitiatorImageUrl)) {
-            Picasso.Builder(applicationContext)
-                .build()
-                .load(callInitiatorImageUrl)
-                .placeholder(defaultImgResId)
-                .error(defaultImgResId)
+        if (!TextUtils.isEmpty(callPhoto)) {
+            Glide.with(applicationContext)
+                .load(callPhoto)
+                .error(defaultPhotoResId)
+                .placeholder(defaultPhotoResId)
                 .into(avatarImg)
-            return
+        } else {
+            avatarImg.setImageResource(defaultPhotoResId)
         }
 
-        val customAvatarResName = com.connectycube.flutter.connectycube_flutter_call_kit.utils.getString(this, "icon")
-        if(!TextUtils.isEmpty(customAvatarResName)) {
-            val imgResourceId = resources.getIdentifier(customAvatarResName, "drawable", packageName)
-            if (imgResourceId != 0){
-                avatarImg.setImageResource(imgResourceId)
-                return
-            }
-        }
-
-        avatarImg.setImageResource(defaultImgResId)
+        val rippleAnimation: RippleBackground =
+            findViewById(resources.getIdentifier("llBackgroundAnimation", "id", packageName))
+            rippleAnimation.startRippleAnimation()
     }
 
     // calls from layout file
@@ -195,6 +220,7 @@ class IncomingCallActivity : Activity() {
         bundle.putInt(EXTRA_CALL_INITIATOR_ID, callInitiatorId)
         bundle.putString(EXTRA_CALL_INITIATOR_NAME, callInitiatorName)
         bundle.putIntegerArrayList(EXTRA_CALL_OPPONENTS, callOpponents)
+        bundle.putString(EXTRA_CALL_PHOTO, callPhoto)
         bundle.putString(EXTRA_CALL_USER_INFO, callUserInfo)
 
         val endCallIntent = Intent(this, EventReceiver::class.java)
@@ -211,6 +237,7 @@ class IncomingCallActivity : Activity() {
         bundle.putInt(EXTRA_CALL_INITIATOR_ID, callInitiatorId)
         bundle.putString(EXTRA_CALL_INITIATOR_NAME, callInitiatorName)
         bundle.putIntegerArrayList(EXTRA_CALL_OPPONENTS, callOpponents)
+        bundle.putString(EXTRA_CALL_PHOTO, callPhoto)
         bundle.putString(EXTRA_CALL_USER_INFO, callUserInfo)
 
         val startCallIntent = Intent(this, EventReceiver::class.java)

@@ -14,9 +14,12 @@ import com.connectycube.flutter.connectycube_flutter_call_kit.utils.isApplicatio
 
 class EventReceiver : BroadcastReceiver() {
     private val TAG = "EventReceiver"
+
     override fun onReceive(context: Context, intent: Intent?) {
 
         if (intent == null || TextUtils.isEmpty(intent.action)) return
+
+        Log.d(TAG, "NotificationReceiver onReceive action: ${intent.action}")
 
         when (intent.action) {
             ACTION_CALL_REJECT -> {
@@ -26,6 +29,7 @@ class EventReceiver : BroadcastReceiver() {
                 val callInitiatorId = extras?.getInt(EXTRA_CALL_INITIATOR_ID)
                 val callInitiatorName = extras?.getString(EXTRA_CALL_INITIATOR_NAME)
                 val callOpponents = extras?.getIntegerArrayList(EXTRA_CALL_OPPONENTS)
+                val callPhoto = extras?.getString(EXTRA_CALL_PHOTO)
                 val userInfo = extras?.getString(EXTRA_CALL_USER_INFO)
                 Log.i(TAG, "NotificationReceiver onReceive Call REJECT, callId: $callId")
 
@@ -36,6 +40,7 @@ class EventReceiver : BroadcastReceiver() {
                 bundle.putInt(EXTRA_CALL_INITIATOR_ID, callInitiatorId!!)
                 bundle.putString(EXTRA_CALL_INITIATOR_NAME, callInitiatorName)
                 bundle.putIntegerArrayList(EXTRA_CALL_OPPONENTS, callOpponents)
+                bundle.putString(EXTRA_CALL_PHOTO, callPhoto)
                 bundle.putString(EXTRA_CALL_USER_INFO, userInfo)
                 broadcastIntent.putExtras(bundle)
 
@@ -62,6 +67,7 @@ class EventReceiver : BroadcastReceiver() {
                 val callInitiatorId = extras?.getInt(EXTRA_CALL_INITIATOR_ID)
                 val callInitiatorName = extras?.getString(EXTRA_CALL_INITIATOR_NAME)
                 val callOpponents = extras?.getIntegerArrayList(EXTRA_CALL_OPPONENTS)
+                val callPhoto = extras?.getString(EXTRA_CALL_PHOTO)
                 val userInfo = extras?.getString(EXTRA_CALL_USER_INFO)
                 Log.i(TAG, "NotificationReceiver onReceive Call ACCEPT, callId: $callId")
 
@@ -72,6 +78,7 @@ class EventReceiver : BroadcastReceiver() {
                 bundle.putInt(EXTRA_CALL_INITIATOR_ID, callInitiatorId!!)
                 bundle.putString(EXTRA_CALL_INITIATOR_NAME, callInitiatorName)
                 bundle.putIntegerArrayList(EXTRA_CALL_OPPONENTS, callOpponents)
+                bundle.putString(EXTRA_CALL_PHOTO, callPhoto)
                 bundle.putString(EXTRA_CALL_USER_INFO, userInfo)
                 broadcastIntent.putExtras(bundle)
 
@@ -101,6 +108,7 @@ class EventReceiver : BroadcastReceiver() {
                 val callType = extras?.getInt(EXTRA_CALL_TYPE)
                 val callInitiatorId = extras?.getInt(EXTRA_CALL_INITIATOR_ID)
                 val callInitiatorName = extras?.getString(EXTRA_CALL_INITIATOR_NAME)
+                val callPhoto = extras?.getString(EXTRA_CALL_PHOTO)
                 val userInfo = extras?.getString(EXTRA_CALL_USER_INFO)
                 Log.i(
                     TAG,

@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
       callerId: incomingCall.callerId,
       callerName: incomingCall.callerName,
       callerSubtitle: incomingCall.callSubtitle,
-      callerImageUrl: incomingCall.callerImageUrl,
+      callPhoto: incomingCall.callerImageUrl,
       opponentsIds: incomingCall.opponentsIds,
       userInfo: info,
     );

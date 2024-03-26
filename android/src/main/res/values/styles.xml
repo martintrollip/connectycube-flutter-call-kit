@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
-        <item name="android:windowBackground">@drawable/launch_background</item>
+
+    <style name="CallkitIncomingTheme" parent="@style/Theme.AppCompat">
+
+        <item name="android:windowTranslucentStatus">true</item>
+
+        <item name="android:windowTranslucentNavigation">true</item>
+
+    </style>
+
+    <style name="circleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
     </style>
 
     <style name="CallTheme" parent="@android:style/Theme.Black.NoTitleBar">
