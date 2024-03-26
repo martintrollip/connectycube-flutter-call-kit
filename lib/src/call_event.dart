@@ -20,6 +20,8 @@ class CallEvent {
   });
 
   final String sessionId;
+
+  /// Call type (0 - audio, 1 - video)
   final int callType;
   final int callerId;
   final String callerName;

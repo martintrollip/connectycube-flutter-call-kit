@@ -6,6 +6,12 @@ A Flutter plugin for displaying call screen when the app is in the background or
 It provides a complex solution for implementation the background calls feature in your app including 
 getting token and displaying the Incoming call screen.
 
+## Changes
+
+The UI was updated to match company branding in this fork.  Also added an example app with usage instructions. 
+
+Added option to load url for caller image.  Added ripple effect to call image. Added subtitle.  Get incoming text from strings. 
+
 ## Supported platforms
 
 - Android

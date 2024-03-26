@@ -4,13 +4,6 @@ Demonstrates how to use the connectycube_flutter_call_kit plugin.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+`flutter run` on preferred device
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Click on the call button to simulate an incoming call.   While the call is ringing, click on the answer button to answer the call.   While the call is active, click on the end call button to end the call.  Lock the device to see how the call would look on the lock screen.
