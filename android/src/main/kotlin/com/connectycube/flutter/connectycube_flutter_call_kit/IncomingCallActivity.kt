@@ -208,12 +208,8 @@ class IncomingCallActivity : Activity() {
         }
 
         val acceptButtonAnimation: RippleBackground =
-            findViewById(resources.getIdentifier("accept_button_animation", "id", packageName))
+            findViewById(resources.getIdentifier("llBackgroundAnimation", "id", packageName))
         acceptButtonAnimation.startRippleAnimation()
-
-        val rejectButtonAnimation: RippleBackground =
-            findViewById(resources.getIdentifier("reject_button_animation", "id", packageName))
-        rejectButtonAnimation.startRippleAnimation()
     }
 
     // calls from layout file
