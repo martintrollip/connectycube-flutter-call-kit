@@ -9,5 +9,5 @@
     <color name="call_decline_icon_color">@android:color/white</color>
     <color name="call_notification_color_accent">#4CAF50</color>
     <color name="call_text_color">#222222</color>
-    <color name="ripple_main_color">#80999999</color>
+    <color name="ripple_main_color">#80FFFFFF</color>
 </resources>

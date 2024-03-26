@@ -19,10 +19,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:rb_color="#FFFFFF"
-        app:rb_duration="3000"
-        app:rb_radius="@dimen/call_ripple_layout_size"
-        app:rb_rippleAmount="5"
+        app:rb_color="@color/ripple_main_color"
+        app:rb_duration="4500"
+        app:rb_radius="@dimen/call_ripple_size"
+        app:rb_rippleAmount="4"
         app:rb_scale="2">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -37,8 +37,10 @@
             app:layout_constraintTop_toTopOf="@+id/llBackgroundAnimation"
             app:shapeAppearanceOverlay="@style/circleImageView"
             app:strokeColor="@android:color/white"
-            app:strokeWidth="2dp"
+            app:strokeWidth="1dp"
+            android:padding="2dp"
             tools:ignore="ContentDescription"
+            android:clipToPadding="false"
             tools:src="@drawable/photo_placeholder" />
     </com.skyfishjy.library.RippleBackground>
 
