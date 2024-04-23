@@ -56,7 +56,17 @@ fun showCallNotification(
         "[showCallNotification] canUseFullScreenIntent: ${notificationManager.canUseFullScreenIntent()}"
     )
 
-    val intent = getLaunchIntent(context)
+    val intent = createStartIncomingScreenIntent(
+        context,
+        callId,
+        callType,
+        callInitiatorId,
+        callInitiatorName,
+        callSubtitle,
+        callOpponents,
+        callPhoto,
+        userInfo,
+    )
 
     val pendingIntent = PendingIntent.getActivity(
         context,
